@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -31,10 +32,23 @@ type AnthropicResponse struct {
 	Completion string `json:"completion"`
 }
 
-const prefix = "Human: "
-const postfix = "\n\nAssistant:"
+const prefix = "\n\nHuman: "
+const postfix = "\n\nAssistant: "
 
 func main() {
+	// Open or create the log file
+	logFile, err := os.OpenFile("log_file.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer logFile.Close()
+
+	handler := slog.NewJSONHandler(logFile, &slog.HandlerOptions{
+		Level: slog.LevelDebug, // Set the minimum log level
+	})
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
+
 	// Load AWS configuration
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
 	if err != nil {
@@ -58,6 +72,7 @@ func main() {
 			break
 		}
 
+		slog.Info(fmt.Sprintf("input: %s", input))
 		conversation += input + postfix
 
 		answer, err := callBedrock(client, input)
@@ -66,6 +81,7 @@ func main() {
 			continue
 		}
 
+		slog.Info(fmt.Sprintf("answer: %s", answer))
 		fmt.Printf("AI: %s\n", strings.TrimSpace(answer))
 		conversation += strings.TrimSpace(answer)
 
