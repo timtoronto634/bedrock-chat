@@ -99,7 +99,7 @@ func callBedrock(client *bedrockruntime.Client, input string) (string, error) {
 
 	request := AnthropicRequest{
 		Prompt:            prompt,
-		MaxTokensToSample: 100,
+		MaxTokensToSample: 4000,
 		Temperature:       0.7,
 		TopP:              0.9,
 		TopK:              50,
