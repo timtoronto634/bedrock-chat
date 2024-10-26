@@ -1,6 +1,14 @@
 # Bedrock Chatbot CLI
 This project is a simple command-line interface (CLI) tool for a chatbot using Amazon Bedrock.
 
+
+
+
+https://github.com/user-attachments/assets/189f5fa5-21b0-4d5d-9497-ab31cd2be253
+
+
+
+
 ## Prerequisites
 - Go 1.16 or higher
 - AWS SDK for Go
