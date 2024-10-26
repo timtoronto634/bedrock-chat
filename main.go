@@ -75,7 +75,7 @@ func main() {
 		slog.Info(fmt.Sprintf("input: %s", input))
 		conversation += input + postfix
 
-		answer, err := callBedrock(client, input)
+		answer, err := callBedrock(client, conversation)
 		if err != nil {
 			fmt.Printf("Error calling Bedrock: %v\n", err)
 			continue
