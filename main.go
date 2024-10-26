@@ -31,6 +31,9 @@ type AnthropicResponse struct {
 	Completion string `json:"completion"`
 }
 
+const prefix = "Human: "
+const postfix = "\n\nAssistant:"
+
 func main() {
 	// Load AWS configuration
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
@@ -42,7 +45,8 @@ func main() {
 	client := bedrockruntime.NewFromConfig(cfg)
 
 	fmt.Println("How can I help you?")
-
+	fmt.Print("You: ")
+	conversation := "" + prefix
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		input := scanner.Text()
@@ -50,14 +54,23 @@ func main() {
 			continue
 		}
 
-		response, err := callBedrock(client, input)
+		if input == "exit" {
+			break
+		}
+
+		conversation += input + postfix
+
+		answer, err := callBedrock(client, input)
 		if err != nil {
 			fmt.Printf("Error calling Bedrock: %v\n", err)
 			continue
 		}
 
-		fmt.Println(strings.TrimSpace(response))
-		fmt.Println("\nHow can I help you?")
+		fmt.Printf("AI: %s\n", strings.TrimSpace(answer))
+		conversation += strings.TrimSpace(answer)
+
+		fmt.Print("You: ")
+		conversation += prefix
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -70,10 +83,10 @@ func callBedrock(client *bedrockruntime.Client, input string) (string, error) {
 
 	request := AnthropicRequest{
 		Prompt:            prompt,
-		MaxTokensToSample: 300,
+		MaxTokensToSample: 100,
 		Temperature:       0.7,
-		TopP:              1,
-		TopK:              250,
+		TopP:              0.9,
+		TopK:              50,
 		StopSequences:     []string{"\n\nHuman:"},
 	}
 
