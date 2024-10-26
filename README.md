@@ -1,5 +1,5 @@
 # Bedrock Chatbot CLI
-This project is a simple command-line interface (CLI) tool for a chatbot using Amazon Bedrock.
+This project is a simple (sample) command-line interface (CLI) tool for a chatbot using Amazon Bedrock.
 
 
 
@@ -15,6 +15,15 @@ https://github.com/user-attachments/assets/189f5fa5-21b0-4d5d-9497-ab31cd2be253
 - AWS credentials configured
 
 ## Installation
+
+### as a CLI
+
+```
+% go install github.com/timtoronto634/bedrock-chat@latest
+% AWS_PROFILE=your_profile bedrock-chat
+```
+
+### as a repository
 
 1. Clone the repository:
 
@@ -34,7 +43,7 @@ go mod tidy
 Run the application:
 
 ```
-go run
+AWS_PROFILE=your_profile go run .
 ```
 
 Type `exit` when you want to end the conversation
